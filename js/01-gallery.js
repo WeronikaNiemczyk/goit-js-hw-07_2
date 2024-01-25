@@ -25,17 +25,33 @@ galleryPlace.innerHTML = gallery;
 
 galleryPlace.addEventListener("click", (event) => {
   event.preventDefault();
-  if (event.target.classList.contains("gallery__item")) return;
+  if (!event.target.classList.contains("gallery__image")) return;
 
   const source = event.target.dataset.source;
-  console.log(source);
-  console.log(event);
-  console.log("Event target" + event.target);
+  // console.log(source);
+  // console.log(event);
+  // console.log("Event target" + event.target);
 
   const instance = basicLightbox.create(
     `
         <img src="${source}" width="800" height="600">
-    `
+    `,
+    {
+      onShow: () => {
+        galleryPlace.addEventListener("keydown", onEsc);
+      },
+      onClose: () => {
+        galleryPlace.removeEventListener("keydown", onEsc);
+      },
+    }
   );
+  const onEsc = (event) => {
+    if (event.key !== "Escape") {
+      return;
+    } else {
+      instance.close();
+      console.log(event.key);
+    }
+  };
   instance.show();
 });
